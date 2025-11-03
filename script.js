@@ -109,12 +109,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // ------------------------------ 音乐播放与切换 ------------------------------
   const playlist = [
     {
-      title: "《Light》 温柔钢琴",
-      src: "music/music.mp3",
+      title: "《Hold my hand》 IU",
+      src: "music/Hold my hand.mp3",
     },
     {
-      title: "《Starry Love》 星空慢舞",
-      src: "https://cdn.pixabay.com/download/audio/2022/10/19/audio_0f9f1a5d78.mp3?filename=romantic-ambient-118766.mp3",
+      title: "《Blueming》 IU",
+      src: "music/Blueming.mp3",
+    },
+    {
+      title: "《Strawberry moon》 IU",
+      src: "music/Strawberry moon.mp3",
     },
   ];
   let currentTrack = 0;
@@ -424,7 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (score <= 2) {
       quizImage.src = "images/result-a.svg";
-      quizMessage.textContent = `得分 ${score}/5，小可爱还需要多多了解我哦～ (图片会慢慢隐去)`;
+      quizMessage.textContent = `得分 ${score}/5，小可爱还需要多多了解我哦～`;
       quizImage.hidden = false;
       setTimeout(() => quizImage.classList.add("fade-out"), 100);
       setTimeout(() => {

@@ -181,11 +181,7 @@ body.night-mode .letter-panel {
 .quiz form {
   display: flex;
   flex-direction: column;
-<<<<<<< HEAD
   gap: 0;
-=======
-  gap: 16px;
->>>>>>> main
   align-items: stretch;
 }
 
@@ -199,13 +195,10 @@ body.night-mode .letter-panel {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-<<<<<<< HEAD
 .quiz-question + .quiz-question {
   margin-top: 18px;
 }
 
-=======
->>>>>>> main
 body.night-mode .quiz-question {
   background: rgba(15, 23, 42, 0.7);
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.35);
