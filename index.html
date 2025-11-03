@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,49 +9,91 @@
 </head>
 
 <body>
+  <!-- 烟花使用的画布，定位在页面顶层 -->
+  <canvas id="fireworksCanvas" aria-hidden="true"></canvas>
+  <!-- 飘心与落花动画容器 -->
+  <div class="floating-hearts" aria-hidden="true"></div>
+  <div class="falling-petals" aria-hidden="true"></div>
+
   <header class="site-header">
     <h1>🎂 Happy 20th Birthday Natalie!</h1>
     <p id="type"></p>
+    <button id="toggle-theme" class="toggle-theme" type="button">🌞 切换白天 / 夜晚 🌙</button>
   </header>
 
   <main>
-    <section id="gallery" class="gallery">
-    <img src="images/1.jpg" alt="Memory 1">
-    <img src="images/2.jpg" alt="Memory 2">
-    <img src="images/3.jpg" alt="Memory 3">
-    <img src="images/4.jpg" alt="Memory 4">
-    <img src="images/5.jpg" alt="Memory 5">
-    <img src="images/6.jpg" alt="Memory 6">
-    <img src="images/7.jpg" alt="Memory 7">
-    <img src="images/8.jpg" alt="Memory 8">
-    <img src="images/9.jpg" alt="Memory 9">
-    <img src="images/10.jpg" alt="Memory 10">
-    <img src="images/11.jpg" alt="Memory 11">
-    <img src="images/12.jpg" alt="Memory 12">
-    <img src="images/13.jpg" alt="Memory 13">
-    <img src="images/14.jpg" alt="Memory 14">
-    <img src="images/15.jpg" alt="Memory 15">
-    <img src="images/16.jpg" alt="Memory 16">
-    <img src="images/17.jpg" alt="Memory 17">
-    <img src="images/18.jpg" alt="Memory 18">
-    <img src="images/19.jpg" alt="Memory 19">
-    <img src="images/20.jpg" alt="Memory 20">
-  </section>
-    <div class="actions">
-      <button id="surprise">Click me 🎁</button>
-      <button id="play">Play Music 🎵</button>
-      <audio id="bgm" src="music/music.mp3" preload="auto" loop></audio>
-    </div>
+    <section class="timeboard" aria-label="纪念日与倒计时">
+      <article class="time-card">
+        <h2>⏳ 距离下一次生日倒计时</h2>
+        <p id="countdown">加载中...</p>
+      </article>
+      <article class="time-card">
+        <h2>💞 在一起的幸福天数</h2>
+        <p id="together-days">计算中...</p>
+      </article>
+    </section>
+
+    <section class="letter" aria-label="情书专区">
+      <button id="toggle-letter" type="button" class="letter-btn">💌 打开隐藏信件</button>
+      <div id="secret-letter" class="letter-panel" hidden>
+        <p id="letter-text"></p>
+      </div>
+    </section>
+
+    <section id="gallery" class="gallery" aria-label="回忆相册">
+      <img src="images/1.jpg" alt="Memory 1" data-index="0">
+      <img src="images/2.jpg" alt="Memory 2" data-index="1">
+      <img src="images/3.jpg" alt="Memory 3" data-index="2">
+      <img src="images/4.jpg" alt="Memory 4" data-index="3">
+      <img src="images/5.jpg" alt="Memory 5" data-index="4">
+      <img src="images/6.jpg" alt="Memory 6" data-index="5">
+      <img src="images/7.jpg" alt="Memory 7" data-index="6">
+      <img src="images/8.jpg" alt="Memory 8" data-index="7">
+      <img src="images/9.jpg" alt="Memory 9" data-index="8">
+      <img src="images/10.jpg" alt="Memory 10" data-index="9">
+      <img src="images/11.jpg" alt="Memory 11" data-index="10">
+      <img src="images/12.jpg" alt="Memory 12" data-index="11">
+      <img src="images/13.jpg" alt="Memory 13" data-index="12">
+      <img src="images/14.jpg" alt="Memory 14" data-index="13">
+      <img src="images/15.jpg" alt="Memory 15" data-index="14">
+      <img src="images/16.jpg" alt="Memory 16" data-index="15">
+      <img src="images/17.jpg" alt="Memory 17" data-index="16">
+      <img src="images/18.jpg" alt="Memory 18" data-index="17">
+      <img src="images/19.jpg" alt="Memory 19" data-index="18">
+      <img src="images/20.jpg" alt="Memory 20" data-index="19">
+    </section>
+
+    <section class="actions">
+      <button id="surprise" type="button">🎆 放烟花庆祝</button>
+      <button id="play" type="button">▶️ 播放音乐</button>
+      <button id="next-music" type="button">🎵 切换音乐</button>
+      <audio id="bgm" preload="auto" loop></audio>
+      <p id="music-title" class="music-title" aria-live="polite"></p>
+    </section>
+
+    <section id="love-quiz" class="quiz" aria-label="心动值小测">
+      <h2>❤️ 心动值小测</h2>
+      <p class="quiz-intro">用 5 道小题检测我们的心动默契，答完后看看会出现哪一张专属惊喜图吧～</p>
+      <form id="quiz-form">
+        <div id="quiz-questions"></div>
+        <button id="submit-quiz" type="button">💕 提交测试</button>
+      </form>
+      <div id="quiz-result" class="quiz-result" aria-live="polite">
+        <img id="quiz-image" alt="心动测试结果图片" hidden />
+        <p id="quiz-message"></p>
+      </div>
+    </section>
   </main>
 
-  <!-- 灯箱：点击缩略图后显示大图 -->
-  <div id="lightbox" class="lightbox" aria-hidden="true">
-    <img id="lightbox-img" alt="Large photo preview">
+  <!-- 灯箱：点击缩略图后显示大图，可左右切换 -->
+  <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-label="照片预览">
+    <button class="lightbox-close" type="button" aria-label="关闭预览">✕</button>
+    <button class="lightbox-nav prev" type="button" aria-label="上一张">‹</button>
+    <img id="lightbox-img" alt="放大照片预览">
+    <button class="lightbox-nav next" type="button" aria-label="下一张">›</button>
   </div>
 
   <script src="script.js" defer></script>
 </body>
 
 </html>
-
-
