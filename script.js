@@ -40,9 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ------------------------------ 倒计时与纪念日计算 ------------------------------
   // 生日日期：若当年已过，则自动计算下一年
-  const birthdayMonth = 4; // 五月 -> JS 月份从 0 开始
-  const birthdayDate = 20;
-  const togetherStart = new Date("2021-09-01T00:00:00");
+  const birthdayMonth = 10; // 11 月 -> JS 月份从 0 开始
+  const birthdayDate = 24;
+  const togetherStart = new Date("2025-04-05T00:00:00");
 
   function updateTimeBoard() {
     const now = new Date();
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let particles = [];
 
   function createFirework(x, y) {
-    const count = 36;
+    const count = 64;
     const baseColor = Math.floor(Math.random() * 360);
     for (let i = 0; i < count; i += 1) {
       const angle = (Math.PI * 2 * i) / count;
@@ -197,10 +197,10 @@ document.addEventListener("DOMContentLoaded", () => {
         x,
         y,
         angle,
-        speed: Math.random() * 4 + 2,
+        speed: Math.random() * 4 + 4.5,
         alpha: 1,
-        decay: Math.random() * 0.02 + 0.01,
-        color: `hsl(${baseColor + Math.random() * 40}, 80%, 60%)`,
+        decay: Math.random() * 0.015 + 0.008,
+        color: `hsl(${baseColor + Math.random() * 40}, 92%, 68%)`,
       });
     }
   }
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.globalAlpha = Math.max(p.alpha, 0);
       ctx.fillStyle = p.color;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
       ctx.fill();
     });
     ctx.globalAlpha = 1;
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function launchCelebration() {
     const width = viewWidth;
     const height = viewHeight;
-    for (let i = 0; i < 4; i += 1) {
+    for (let i = 0; i < 7; i += 1) {
       setTimeout(() => {
         const x = Math.random() * width;
         const y = Math.random() * (height * 0.6);
@@ -263,6 +263,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setInterval(spawnHeart, 1800);
   setInterval(spawnPetal, 2200);
+
+  function burstHearts(count = 28) {
+    // 连续制造多颗爱心，营造满屏心动的惊喜
+    for (let i = 0; i < count; i += 1) {
+      setTimeout(spawnHeart, i * 90);
+    }
+  }
 
   // ------------------------------ 灯箱：支持左右切换 ------------------------------
   let currentIndex = 0;
@@ -329,35 +336,98 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ------------------------------ 下载照片与分享祝福 ------------------------------
-  downloadBtn.addEventListener("click", () => {
-    const targetImg = lightboxOpen ? lightboxImg : galleryImages[currentIndex] || galleryImages[0];
-    if (!targetImg || !targetImg.src) return;
-    const link = document.createElement("a");
-    link.href = targetImg.src;
-    link.download = `natalie-memory-${currentIndex + 1}.jpg`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  });
+  // ------------------------------ 心动值小测：五道题判断默契程度 ------------------------------
+  const quizData = [
+    {
+      question: "我们第一次正式在一起是哪一天？",
+      options: ["2025 年 4 月 5 日", "2024 年 11 月 24 日", "2025 年 5 月 20 日"],
+      answer: 0,
+    },
+    {
+      question: "她最期待一起做的浪漫活动是？",
+      options: ["背靠背看日出", "逛夜市吃小吃", "宅家打游戏"],
+      answer: 0,
+    },
+    {
+      question: "挑选生日礼物时，她最看重的是？",
+      options: ["价格要高", "心意要真", "包装要粉"],
+      answer: 1,
+    },
+    {
+      question: "我们的专属暗号是哪一个？",
+      options: ["11024", "0405", "0420"],
+      answer: 2,
+    },
+    {
+      question: "当她心情低落时，你最常用的安慰方式？",
+      options: ["拥抱她并轻声讲话", "立刻开启游戏机", "假装不知道"],
+      answer: 0,
+    },
+  ];
 
-  shareBtn.addEventListener("click", async () => {
-    const shareData = {
-      title: "Happy 20th Birthday Natalie",
-      text: "和我一起为 Natalie 送上最甜蜜的祝福吧！",
-      url: window.location.href,
-    };
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        alert("链接已复制，快去分享给朋友吧！");
-      } else {
-        prompt("复制下面的祝福链接与文字：", `${shareData.text} ${shareData.url}`);
+  function renderQuiz() {
+    quizQuestionsWrap.innerHTML = "";
+    quizData.forEach((item, index) => {
+      const block = document.createElement("fieldset");
+      block.className = "quiz-question";
+      const optionsHtml = item.options
+        .map(
+          (option, optionIndex) => `
+              <label>
+                <input type="radio" name="question-${index}" value="${optionIndex}" required />
+                <span>${option}</span>
+              </label>`
+        )
+        .join("");
+      block.innerHTML = `<legend>Q${index + 1}. ${item.question}</legend>${optionsHtml}`;
+      quizQuestionsWrap.appendChild(block);
+    });
+  }
+
+  renderQuiz();
+
+  function resetResultDisplay() {
+    quizImage.hidden = true;
+    quizImage.classList.remove("fade-out");
+    quizImage.src = "";
+    quizMessage.textContent = "";
+  }
+
+  submitQuizBtn.addEventListener("click", () => {
+    if (!quizForm.checkValidity()) {
+      quizForm.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(quizForm);
+    let score = 0;
+    quizData.forEach((item, index) => {
+      const choice = Number(formData.get(`question-${index}`));
+      if (choice === item.answer) {
+        score += 1;
       }
-    } catch (error) {
-      console.warn("分享被取消：", error);
+    });
+
+    resetResultDisplay();
+
+    if (score <= 2) {
+      quizImage.src = "images/result-a.svg";
+      quizMessage.textContent = `得分 ${score}/5，小可爱还需要多多了解我哦～ (图片会慢慢隐去)`;
+      quizImage.hidden = false;
+      setTimeout(() => quizImage.classList.add("fade-out"), 100);
+      setTimeout(() => {
+        quizImage.hidden = true;
+        quizImage.classList.remove("fade-out");
+      }, 4100);
+    } else if (score <= 4) {
+      quizImage.src = "images/result-b.svg";
+      quizMessage.textContent = `得分 ${score}/5，已经很懂我啦！继续加油我们会更默契～`;
+      quizImage.hidden = false;
+    } else {
+      quizImage.src = "images/result-c.svg";
+      quizMessage.textContent = "满分！你就是我的灵魂伴侣，送上一大波爱心给你！";
+      quizImage.hidden = false;
+      burstHearts(36);
     }
   });
 });

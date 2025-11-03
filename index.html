@@ -71,9 +71,17 @@
       <p id="music-title" class="music-title" aria-live="polite"></p>
     </section>
 
-    <section class="social-share" aria-label="互动与分享">
-      <button id="download-photo" type="button">📷 下载照片</button>
-      <button id="share-blessing" type="button">🎁 分享祝福</button>
+    <section id="love-quiz" class="quiz" aria-label="心动值小测">
+      <h2>❤️ 心动值小测</h2>
+      <p class="quiz-intro">用 5 道小题检测我们的心动默契，答完后看看会出现哪一张专属惊喜图吧～</p>
+      <form id="quiz-form">
+        <div id="quiz-questions"></div>
+        <button id="submit-quiz" type="button">💕 提交测试</button>
+      </form>
+      <div id="quiz-result" class="quiz-result" aria-live="polite">
+        <img id="quiz-image" alt="心动测试结果图片" hidden />
+        <p id="quiz-message"></p>
+      </div>
     </section>
   </main>
 
