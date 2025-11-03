@@ -20,11 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const lightboxClose = lightbox.querySelector(".lightbox-close");
   const lightboxPrev = lightbox.querySelector(".prev");
   const lightboxNext = lightbox.querySelector(".next");
-  const quizForm = document.getElementById("quiz-form");
-  const quizQuestionsWrap = document.getElementById("quiz-questions");
-  const submitQuizBtn = document.getElementById("submit-quiz");
-  const quizImage = document.getElementById("quiz-image");
-  const quizMessage = document.getElementById("quiz-message");
+  const downloadBtn = document.getElementById("download-photo");
+  const shareBtn = document.getElementById("share-blessing");
   const heartContainer = document.querySelector(".floating-hearts");
   const petalContainer = document.querySelector(".falling-petals");
   const fireworksCanvas = document.getElementById("fireworksCanvas");
@@ -75,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateTimeBoard, 1000);
 
   // ------------------------------ 隐藏信件与打字显示情书 ------------------------------
-  const loveLetter = `亲爱的 Natalie：\n\n在这第 20 个生日，我想把所有温柔的心跳都写进这封信里。我们一起走过的日子像银河一样长，\n那些回忆在我心中闪闪发光。无论是欢笑还是小小的闹脾气，都是我们之间独一无二的情歌。\n\n愿今后的每一年，我都能陪你庆祝 11 月 24 日的生日，数着从 2025 年 4 月 5 日开始的每一份陪伴，看日出、看烟火、看漫天星河。生日快乐，我的挚爱，\n愿你永远被世界温柔以待，也被我紧紧拥抱。❤️`;
+  const loveLetter = `亲爱的 Natalie：\n\n在这第 20 个生日，我想把所有温柔的心跳都写进这封信里。我们一起走过的日子像银河一样长，\n那些回忆在我心中闪闪发光。无论是欢笑还是小小的闹脾气，都是我们之间独一无二的情歌。\n\n愿今后的每一年，我都能陪你看日出、看烟火、看漫天星河。生日快乐，我的挚爱，\n愿你永远被世界温柔以待，也被我紧紧拥抱。❤️`;
   let letterTyped = false;
 
   function typeLetter(text) {
