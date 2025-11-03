@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="gradC" cx="0.5" cy="0.5" r="0.75">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="55%" stop-color="#f9a8d4" />
+      <stop offset="100%" stop-color="#f472b6" />
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" rx="32" fill="url(#gradC)" />
+  <g fill="#be123c">
+    <path d="M114 164c0-33 23.3-60 56-60 17.4 0 32.9 9.4 42 23.9 9.1-14.5 24.6-23.9 42-23.9 32.7 0 56 27 56 60 0 52.3-54 83.6-98 124.5-44-40.9-98-72.2-98-124.5Z" />
+  </g>
+  <g fill="#fff" opacity="0.9">
+    <path d="M84 104c0-12 8.4-22 20-22 6.8 0 13 3.7 16.6 9.4 3.6-5.7 9.8-9.4 16.6-9.4 11.6 0 20 10 20 22 0 19-18.4 30.4-36.6 45.3C102.4 134.4 84 123 84 104Z" />
+    <path d="M286 290c0-10 7-18 16.6-18 5.7 0 11 3.1 14 7.7 3-4.6 8.3-7.7 14-7.7 9.6 0 16.6 8 16.6 18 0 15.5-15.2 24.9-30.6 37.2C301.2 314.9 286 305.5 286 290Z" />
+    <circle cx="70" cy="260" r="16" />
+    <circle cx="320" cy="120" r="14" />
+  </g>
+  <text x="200" y="330" text-anchor="middle" font-size="36" font-family="'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif" fill="#fff">满分恋爱脑！</text>
+</svg>
