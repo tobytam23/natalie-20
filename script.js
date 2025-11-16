@@ -95,14 +95,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const hidden = letterPanel.hasAttribute("hidden");
     if (hidden) {
       letterPanel.removeAttribute("hidden");
-      letterBtn.textContent = "💌 收起情书";
+      letterBtn.textContent = "💌 收起信件";
       if (!letterTyped) {
         typeLetter(loveLetter);
         letterTyped = true;
       }
     } else {
       letterPanel.setAttribute("hidden", "true");
-      letterBtn.textContent = "💌 打开隐藏信件";
+      letterBtn.textContent = "💌 打開隱藏信件";
     }
   });
 
@@ -127,13 +127,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadTrack(index, autoPlay = false) {
     const item = playlist[index];
     bgm.src = item.src;
-    musicTitleEl.textContent = `当前曲目：${item.title}`;
+    musicTitleEl.textContent = `當前曲目：${item.title}`;
     if (autoPlay || isPlaying) {
       bgm
         .play()
         .then(() => {
           isPlaying = true;
-          playBtn.textContent = "⏸️ 暂停音乐";
+          playBtn.textContent = "⏸️ 暫停音樂";
         })
         .catch((error) => console.warn("Autoplay blocked:", error));
     }
@@ -147,13 +147,13 @@ document.addEventListener("DOMContentLoaded", () => {
         .play()
         .then(() => {
           isPlaying = true;
-          playBtn.textContent = "⏸️ 暂停音乐";
+          playBtn.textContent = "⏸️ 暫停音樂";
         })
-        .catch((error) => console.warn("播放失败：", error));
+        .catch((error) => console.warn("播放失敗：", error));
     } else {
       bgm.pause();
       isPlaying = false;
-      playBtn.textContent = "▶️ 播放音乐";
+      playBtn.textContent = "▶️ 播放音樂";
     }
   });
 
@@ -172,8 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
   toggleThemeBtn.addEventListener("click", () => {
     document.body.classList.toggle("night-mode");
     toggleThemeBtn.textContent = document.body.classList.contains("night-mode")
-      ? "🌙 切换回白天"
-      : "🌞 切换白天 / 夜晚 🌙";
+      ? "🌙 切換回白天"
+      : "🌞 切換白天 / 夜晚 🌙";
   });
 
   // ------------------------------ 烟花动画（Canvas） ------------------------------
@@ -346,28 +346,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // ------------------------------ 心动值小测：五道题判断默契程度 ------------------------------
   const quizData = [
     {
-      question: "我们第一次正式在一起是哪一天？",
+      question: "我地係邊日係一齊嘅😽",
       options: ["2025 年 4 月 5 日", "2024 年 11 月 24 日", "2025 年 5 月 20 日"],
       answer: 0,
     },
     {
-      question: "她最期待一起做的浪漫活动是？",
-      options: ["背靠背看日出", "逛夜市吃小吃", "宅家打游戏"],
+      question: "大豬豬就讀嘅科系係😎",
+      options: ["計算機科學與技術", "女朋友需求理解與回應科學", "女朋友情緒工程學系"],
       answer: 0,
     },
     {
-      question: "挑选生日礼物时，她最看重的是？",
-      options: ["价格要高", "心意要真", "包装要粉"],
-      answer: 1,
-    },
-    {
-      question: "我们的专属暗号是哪一个？",
-      options: ["11024", "0405", "0420"],
+      question: "以下情況中，大豬豬最爆計（開心）🤯的是",
+      options: ["女朋友說沒事了", "女朋友說訓吾著", "當你在激烈打機時候女朋友同你講佢訓吾著"],
       answer: 2,
     },
     {
-      question: "当她心情低落时，你最常用的安慰方式？",
-      options: ["拥抱她并轻声讲话", "立刻开启游戏机", "假装不知道"],
+      question: "我最喜歡嘅姿勢（唔好唸歪）",
+      options: ["女上男下😏", "自拍", "和豬豬一起頭向下壓影雙下巴"],
+      answer: 2,
+    },
+    {
+      question: "(5×10+2)×105+(32+4)×102+2×(3!+1)",
+      options: ["5201314🥰", "0", "1"],
       answer: 0,
     },
   ];
@@ -417,33 +417,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const formData = new FormData(quizForm);
     let score = 0;
+    const wrongQuestions = [];
     quizData.forEach((item, index) => {
       const choice = Number(formData.get(`question-${index}`));
       if (choice === item.answer) {
         score += 1;
+      } else {
+        wrongQuestions.push(index + 1);
       }
     });
 
     resetResultDisplay();
 
-    if (score <= 2) {
-      quizImage.src = "images/result-a.svg";
-      quizMessage.textContent = `得分 ${score}/5，小可爱还需要多多了解我哦～`;
-      quizImage.hidden = false;
-      setTimeout(() => quizImage.classList.add("fade-out"), 100);
-      setTimeout(() => {
-        quizImage.hidden = true;
-        quizImage.classList.remove("fade-out");
-      }, 4100);
-    } else if (score <= 4) {
-      quizImage.src = "images/result-b.svg";
-      quizMessage.textContent = `得分 ${score}/5，已经很懂我啦！继续加油我们会更默契～`;
-      quizImage.hidden = false;
-    } else {
-      quizImage.src = "images/result-c.svg";
-      quizMessage.textContent = "满分！你就是我的灵魂伴侣，送上一大波爱心给你！";
+    // ⭐⭐⭐ 情况 1：满分
+    if (score === 5) {
+      quizImage.src = "images/b.png";   // 你要的满分图
+      quizMessage.textContent = "滿分！我豬豬好聰明呀 簡直就係我的靈魂伴侶！";
       quizImage.hidden = false;
       burstHearts(36);
+      return;
     }
-  });
+
+    // ⭐⭐⭐ 情况 2：不是满分
+    quizImage.src = "images/a.jpg";      // 非满分用一张统一的图
+    quizImage.hidden = false;
+
+    // 哪些题错了，用逗号连接
+    const wrongList = wrongQuestions.join("，");
+
+    quizMessage.textContent = 
+      `得分是 ${score}/5，
+      答错了這些題目：${wrongList}\n`;
+    });
 });
