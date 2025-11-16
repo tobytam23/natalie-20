@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const musicTitleEl = document.getElementById("music-title");
   const bgm = document.getElementById("bgm");
   const gallery = document.getElementById("gallery");
-  const galleryImages = Array.from(gallery.querySelectorAll("img"));
+  let galleryImages = [];
   const lightbox = document.getElementById("lightbox");
   const lightboxImg = document.getElementById("lightbox-img");
   const lightboxClose = lightbox.querySelector(".lightbox-close");
@@ -29,6 +29,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const petalContainer = document.querySelector(".falling-petals");
   const fireworksCanvas = document.getElementById("fireworksCanvas");
   const ctx = fireworksCanvas.getContext("2d");
+  const visualizerCanvas = document.getElementById("music-visualizer");
+  const visualizerShell = document.querySelector(".visualizer-shell");
+  const visualizerCtx = visualizerCanvas ? visualizerCanvas.getContext("2d") : null;
+
+  let audioCtx;
+  let analyser;
+  let sourceNode;
+  let frequencyData;
+  let visualizerAnimationId = null;
+  const visualizerParticles = [];
 
   // ------------------------------ 打字机效果：营造情感氛围 ------------------------------
   const headerMessage = "This little site is made just for you. 💖";
@@ -124,11 +134,112 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentTrack = 0;
   let isPlaying = false;
 
+  function ensureAudioGraph() {
+    if (!visualizerCanvas) return;
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      sourceNode = audioCtx.createMediaElementSource(bgm);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    }
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+  }
+
+  function startVisualizer() {
+    if (!analyser || visualizerAnimationId) return;
+    const render = () => {
+      visualizerAnimationId = requestAnimationFrame(render);
+      drawVisualizerFrame();
+    };
+    render();
+  }
+
+  function stopVisualizer() {
+    if (visualizerAnimationId) {
+      cancelAnimationFrame(visualizerAnimationId);
+      visualizerAnimationId = null;
+    }
+    if (visualizerCtx && visualizerCanvas) {
+      visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+    }
+  }
+
+  function drawVisualizerFrame() {
+    if (!analyser || !frequencyData || !visualizerCtx || !visualizerCanvas) return;
+    analyser.getByteFrequencyData(frequencyData);
+    const width = visualizerCanvas.width;
+    const height = visualizerCanvas.height;
+    visualizerCtx.clearRect(0, 0, width, height);
+
+    const barCount = 48;
+    const step = Math.floor(frequencyData.length / barCount);
+    let total = 0;
+
+    for (let i = 0; i < barCount; i += 1) {
+      let sum = 0;
+      for (let j = 0; j < step; j += 1) {
+        sum += frequencyData[i * step + j] || 0;
+      }
+      const value = sum / step;
+      total += value;
+      const normalized = value / 255;
+      const barHeight = normalized * height * 0.9 + 10;
+      const x = (i / barCount) * width;
+      const barWidth = width / barCount - 4;
+      const gradient = visualizerCtx.createLinearGradient(x, height - barHeight, x, height);
+      gradient.addColorStop(0, `hsla(${320 - normalized * 120}, 90%, 70%, 0.95)`);
+      gradient.addColorStop(1, `rgba(255, 255, 255, 0.45)`);
+      visualizerCtx.fillStyle = gradient;
+      visualizerCtx.fillRect(x, height - barHeight, barWidth, barHeight);
+    }
+
+    const intensity = total / barCount / 255;
+    if (visualizerShell) {
+      visualizerShell.style.setProperty("--breath", (0.35 + intensity * 0.9).toFixed(3));
+    }
+    drawVisualizerParticles(intensity, width, height);
+  }
+
+  function drawVisualizerParticles(intensity, width, height) {
+    const spawnCount = Math.ceil(intensity * 16);
+    for (let i = 0; i < spawnCount; i += 1) {
+      visualizerParticles.push({
+        x: Math.random() * width,
+        y: height + Math.random() * 30,
+        size: Math.random() * 3 + 1,
+        speed: (Math.random() * 0.8 + 0.4) + intensity * 2.2,
+        alpha: 0.5 + intensity * 0.5,
+        hue: 280 - intensity * 80 + Math.random() * 30,
+      });
+    }
+
+    for (let i = visualizerParticles.length - 1; i >= 0; i -= 1) {
+      const particle = visualizerParticles[i];
+      particle.y -= particle.speed;
+      particle.x += Math.sin(particle.y / 50) * 0.5;
+      particle.alpha -= 0.008;
+      if (particle.alpha <= 0 || particle.y < -20) {
+        visualizerParticles.splice(i, 1);
+        continue;
+      }
+      visualizerCtx.beginPath();
+      visualizerCtx.fillStyle = `hsla(${particle.hue}, 90%, 75%, ${particle.alpha})`;
+      visualizerCtx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+      visualizerCtx.fill();
+    }
+  }
+
   function loadTrack(index, autoPlay = false) {
     const item = playlist[index];
     bgm.src = item.src;
     musicTitleEl.textContent = `當前曲目：${item.title}`;
     if (autoPlay || isPlaying) {
+      ensureAudioGraph();
       bgm
         .play()
         .then(() => {
@@ -143,6 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   playBtn.addEventListener("click", () => {
     if (bgm.paused) {
+      ensureAudioGraph();
       bgm
         .play()
         .then(() => {
@@ -168,6 +280,18 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTrack(currentTrack, true);
   });
 
+  bgm.addEventListener("play", () => {
+    ensureAudioGraph();
+    startVisualizer();
+  });
+
+  bgm.addEventListener("pause", () => {
+    if (audioCtx && audioCtx.state === "running") {
+      audioCtx.suspend();
+    }
+    stopVisualizer();
+  });
+
   // ------------------------------ 白天 / 夜晚模式切换 ------------------------------
   toggleThemeBtn.addEventListener("click", () => {
     document.body.classList.toggle("night-mode");
@@ -190,8 +314,23 @@ document.addEventListener("DOMContentLoaded", () => {
     fireworksCanvas.style.height = `${viewHeight}px`;
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   }
+
+  function resizeVisualizerCanvas() {
+    if (!visualizerCanvas || !visualizerCtx) return;
+    const ratio = window.devicePixelRatio || 1;
+    const width = visualizerCanvas.clientWidth;
+    const height = visualizerCanvas.clientHeight;
+    visualizerCanvas.width = width * ratio;
+    visualizerCanvas.height = height * ratio;
+    visualizerCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
   resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
+  resizeVisualizerCanvas();
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+    resizeVisualizerCanvas();
+  });
 
   let particles = [];
 
@@ -278,6 +417,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ------------------------------ 相册拍立得增强 ------------------------------
+  function enhanceGallery() {
+    const images = Array.from(gallery.querySelectorAll("img"));
+    images.forEach((img, index) => {
+      if (img.closest("figure")) return;
+      const wrapper = document.createElement("figure");
+      wrapper.className = "polaroid";
+      wrapper.style.setProperty("--tilt", `${(Math.random() * 10 - 5).toFixed(2)}deg`);
+      const caption = document.createElement("figcaption");
+      caption.textContent = img.dataset.note || `第 ${index + 1} 幅回憶`;
+      gallery.insertBefore(wrapper, img);
+      wrapper.appendChild(img);
+      wrapper.appendChild(caption);
+    });
+    galleryImages = images;
+  }
+
+  enhanceGallery();
+
   // ------------------------------ 灯箱：支持左右切换 ------------------------------
   let currentIndex = 0;
   let lightboxOpen = false;
@@ -294,6 +452,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showImage(index);
     lightbox.classList.add("show");
     lightbox.setAttribute("aria-hidden", "false");
+    lightboxImg.classList.add("enter");
     lightboxOpen = true;
   }
 
@@ -305,11 +464,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   gallery.addEventListener("click", (event) => {
-    const target = event.target;
-    if (target.tagName === "IMG") {
-      const index = Number(target.dataset.index) || galleryImages.indexOf(target);
-      openLightbox(index);
-    }
+    const targetImg = event.target.closest("img");
+    if (!targetImg || !gallery.contains(targetImg)) return;
+    const index = Number(targetImg.dataset.index) || galleryImages.indexOf(targetImg);
+    openLightbox(index);
   });
 
   lightboxPrev.addEventListener("click", (event) => {
@@ -330,6 +488,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (event.target === lightbox) {
       closeLightbox();
     }
+  });
+
+  lightboxImg.addEventListener("animationend", () => {
+    lightboxImg.classList.remove("enter");
   });
 
   document.addEventListener("keydown", (event) => {
