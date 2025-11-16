@@ -420,16 +420,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // ------------------------------ 相册拍立得增强 ------------------------------
   function enhanceGallery() {
     const images = Array.from(gallery.querySelectorAll("img"));
-    images.forEach((img, index) => {
+    images.forEach((img) => {
       if (img.closest("figure")) return;
       const wrapper = document.createElement("figure");
       wrapper.className = "polaroid";
       wrapper.style.setProperty("--tilt", `${(Math.random() * 10 - 5).toFixed(2)}deg`);
-      const caption = document.createElement("figcaption");
-      caption.textContent = img.dataset.note || `第 ${index + 1} 幅回憶`;
       gallery.insertBefore(wrapper, img);
       wrapper.appendChild(img);
-      wrapper.appendChild(caption);
     });
     galleryImages = images;
   }
