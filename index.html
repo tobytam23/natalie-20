@@ -14,6 +14,11 @@
   <!-- 飘心与落花动画容器 -->
   <div class="floating-hearts" aria-hidden="true"></div>
   <div class="falling-petals" aria-hidden="true"></div>
+  <div class="atmosphere" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
 
   <header class="site-header">
     <h1>🎂 Happy 20th Birthday Natalie!</h1>
@@ -41,34 +46,40 @@
     </section>
 
     <section id="gallery" class="gallery" aria-label="回忆相册">
-      <img src="images/1.jpg" alt="Memory 1" data-index="0">
-      <img src="images/2.jpg" alt="Memory 2" data-index="1">
-      <img src="images/3.jpg" alt="Memory 3" data-index="2">
-      <img src="images/4.jpg" alt="Memory 4" data-index="3">
-      <img src="images/5.jpg" alt="Memory 5" data-index="4">
-      <img src="images/6.jpg" alt="Memory 6" data-index="5">
-      <img src="images/7.jpg" alt="Memory 7" data-index="6">
-      <img src="images/8.jpg" alt="Memory 8" data-index="7">
-      <img src="images/9.jpg" alt="Memory 9" data-index="8">
-      <img src="images/10.jpg" alt="Memory 10" data-index="9">
-      <img src="images/11.jpg" alt="Memory 11" data-index="10">
-      <img src="images/12.jpg" alt="Memory 12" data-index="11">
-      <img src="images/13.jpg" alt="Memory 13" data-index="12">
-      <img src="images/14.jpg" alt="Memory 14" data-index="13">
-      <img src="images/15.jpg" alt="Memory 15" data-index="14">
-      <img src="images/16.jpg" alt="Memory 16" data-index="15">
-      <img src="images/17.jpg" alt="Memory 17" data-index="16">
-      <img src="images/18.jpg" alt="Memory 18" data-index="17">
-      <img src="images/19.jpg" alt="Memory 19" data-index="18">
-      <img src="images/20.jpg" alt="Memory 20" data-index="19">
+      <img src="images/1.jpg" alt="Memory 1" data-index="0" data-note="夏日的風">
+      <img src="images/2.jpg" alt="Memory 2" data-index="1" data-note="第一次甜笑">
+      <img src="images/3.jpg" alt="Memory 3" data-index="2" data-note="遠足小插曲">
+      <img src="images/4.jpg" alt="Memory 4" data-index="3" data-note="海邊的風">
+      <img src="images/5.jpg" alt="Memory 5" data-index="4" data-note="咖啡店側臉">
+      <img src="images/6.jpg" alt="Memory 6" data-index="5" data-note="喜歡的背影">
+      <img src="images/7.jpg" alt="Memory 7" data-index="6" data-note="下班即飛奔">
+      <img src="images/8.jpg" alt="Memory 8" data-index="7" data-note="夜景閃閃">
+      <img src="images/9.jpg" alt="Memory 9" data-index="8" data-note="笑到見牙">
+      <img src="images/10.jpg" alt="Memory 10" data-index="9" data-note="專屬小手勢">
+      <img src="images/11.jpg" alt="Memory 11" data-index="10" data-note="旅程紀念">
+      <img src="images/12.jpg" alt="Memory 12" data-index="11" data-note="深夜自拍">
+      <img src="images/13.jpg" alt="Memory 13" data-index="12" data-note="雨天漫步">
+      <img src="images/14.jpg" alt="Memory 14" data-index="13" data-note="節日驚喜">
+      <img src="images/15.jpg" alt="Memory 15" data-index="14" data-note="午后慵懶">
+      <img src="images/16.jpg" alt="Memory 16" data-index="15" data-note="甜甜眼神">
+      <img src="images/17.jpg" alt="Memory 17" data-index="16" data-note="抓拍瞬間">
+      <img src="images/18.jpg" alt="Memory 18" data-index="17" data-note="珍藏小事">
+      <img src="images/19.jpg" alt="Memory 19" data-index="18" data-note="摩天輪夜">
+      <img src="images/20.jpg" alt="Memory 20" data-index="19" data-note="永遠喜歡">
     </section>
 
-    <section class="actions">
-      <button id="surprise" type="button">🎆 放烟花慶祝</button>
-      <button id="play" type="button">▶️ 播放音樂</button>
-      <button id="next-music" type="button">🎵 切換音樂</button>
-      <audio id="bgm" preload="auto" loop></audio>
-      <p id="music-title" class="music-title" aria-live="polite"></p>
+    <section class="audio-lab" aria-label="音樂視覺體驗">
+      <div class="actions">
+        <button id="surprise" type="button">🎆 放烟花慶祝</button>
+        <button id="play" type="button">▶️ 播放音樂</button>
+        <button id="next-music" type="button">🎵 切換音樂</button>
+        <audio id="bgm" preload="auto" loop></audio>
+        <p id="music-title" class="music-title" aria-live="polite"></p>
+      </div>
+      <div class="visualizer-shell">
+        <canvas id="music-visualizer" aria-hidden="true"></canvas>
+        <p class="visualizer-tip">跳動的聲浪會化成光線與粒子，陪你一起沉浸</p>
+      </div>
     </section>
 
     <section id="love-quiz" class="quiz" aria-label="心动值小测">
