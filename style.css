@@ -27,9 +27,14 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  overflow-y: auto;
   opacity: 0;
   animation: pageFadeIn 1.2s ease 0.2s forwards;
   transition: background 0.6s ease, color 0.6s ease;
+}
+
+body.locked {
+  overflow: hidden;
 }
 
 body::before,
@@ -517,6 +522,12 @@ body.night-mode .floating-hearts span {
   color: rgba(244, 114, 182, 0.9);
 }
 
+.floating-hearts span.click-heart {
+  font-size: 1.8rem;
+  animation: clickHeart 1.4s ease-out forwards;
+  text-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
 .falling-petals span {
   position: absolute;
   color: rgba(255, 255, 255, 0.9);
@@ -562,6 +573,78 @@ body.night-mode .floating-hearts span {
   animation-delay: 2s;
 }
 
+.password-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.85), rgba(255, 192, 203, 0.8));
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.5s ease;
+}
+
+.password-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.password-panel {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 24px;
+  padding: clamp(24px, 3vw, 42px);
+  max-width: 420px;
+  width: min(100%, 420px);
+  box-shadow: 0 30px 80px rgba(255, 77, 136, 0.35);
+  text-align: left;
+  animation: breathe 4s ease-in-out infinite alternate;
+}
+
+.password-panel h2 {
+  margin-top: 0;
+}
+
+.password-panel p {
+  margin-bottom: 12px;
+}
+
+.password-panel input {
+  width: 100%;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 77, 136, 0.35);
+  padding: 12px 16px;
+  font-size: 1rem;
+  margin-bottom: 16px;
+}
+
+.password-panel button {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(120deg, #ff4d88, #f472b6);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 16px 30px rgba(255, 77, 136, 0.35);
+}
+
+.password-panel button:hover {
+  transform: translateY(-2px);
+}
+
+.password-error {
+  color: #dc2626;
+  min-height: 1.5em;
+  margin: 8px 0 0;
+}
+
+.password-panel.shake {
+  animation: shake 0.5s;
+}
+
 @keyframes heartRise {
   0% {
     transform: translateY(0) scale(0.8);
@@ -572,6 +655,20 @@ body.night-mode .floating-hearts span {
   }
   100% {
     transform: translateY(-120vh) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes clickHeart {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -140px))) scale(1.4);
     opacity: 0;
   }
 }
@@ -644,6 +741,19 @@ body.night-mode .floating-hearts span {
   to {
     opacity: 1;
     transform: rotateX(0) rotateY(0) scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
   }
 }
 

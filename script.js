@@ -32,6 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const visualizerCanvas = document.getElementById("music-visualizer");
   const visualizerShell = document.querySelector(".visualizer-shell");
   const visualizerCtx = visualizerCanvas ? visualizerCanvas.getContext("2d") : null;
+  const passwordOverlay = document.getElementById("password-overlay");
+  const passwordInput = document.getElementById("password-input");
+  const passwordSubmit = document.getElementById("password-submit");
+  const passwordError = document.getElementById("password-error");
+  const passwordPanel = passwordOverlay ? passwordOverlay.querySelector(".password-panel") : null;
 
   let audioCtx;
   let analyser;
@@ -39,6 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let frequencyData;
   let visualizerAnimationId = null;
   const visualizerParticles = [];
+  let siteUnlocked = false;
+
+  const floatingHeartEmojis = ["💖", "❤️", "💘", "💗", "💕", "💝"];
+  const petalEmojis = ["🌸", "🌺", "🌷", "🌼", "🌻", "💐", "🌹"];
+  const clickHeartColors = ["#ff4d88", "#f472b6", "#fb7185", "#facc15", "#34d399", "#60a5fa", "#c084fc"];
+  const clickHeartSymbols = ["❤", "💖", "💗", "💘", "💕", "💝"];
 
   // ------------------------------ 打字机效果：营造情感氛围 ------------------------------
   const headerMessage = "This little site is made just for you. 💖";
@@ -388,10 +399,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
   surpriseBtn.addEventListener("click", launchCelebration);
 
+  // ------------------------------ 密码遮罩层 ------------------------------
+  function unlockSite() {
+    if (siteUnlocked) return;
+    siteUnlocked = true;
+    document.body.classList.remove("locked");
+    if (passwordOverlay) {
+      passwordOverlay.classList.add("fade-out");
+      setTimeout(() => passwordOverlay.remove(), 600);
+    }
+    burstHearts(40);
+    launchCelebration();
+  }
+
+  function handlePasswordSubmit() {
+    if (!passwordInput) return;
+    if (passwordInput.value.trim() === "233") {
+      if (passwordError) {
+        passwordError.textContent = "";
+      }
+      unlockSite();
+    } else if (passwordError) {
+      passwordError.textContent = "答案好似唔對喔，再諗諗～";
+      if (passwordPanel) {
+        passwordPanel.classList.remove("shake");
+        // 强制重绘以重新触发动画
+        void passwordPanel.offsetWidth;
+        passwordPanel.classList.add("shake");
+      }
+    }
+  }
+
+  if (passwordSubmit) {
+    passwordSubmit.addEventListener("click", handlePasswordSubmit);
+  }
+
+  if (passwordInput) {
+    passwordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handlePasswordSubmit();
+      }
+    });
+    passwordInput.focus();
+  }
+
   // ------------------------------ 飘心与落花动画 ------------------------------
   function spawnHeart() {
     const heart = document.createElement("span");
-    heart.textContent = Math.random() > 0.5 ? "💖" : "❤️";
+    heart.textContent = floatingHeartEmojis[Math.floor(Math.random() * floatingHeartEmojis.length)];
     heart.style.left = `${Math.random() * 100}%`;
     heart.style.bottom = "-10vh";
     heartContainer.appendChild(heart);
@@ -400,7 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function spawnPetal() {
     const petal = document.createElement("span");
-    petal.textContent = Math.random() > 0.5 ? "🌸" : "🌺";
+    petal.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
     petal.style.left = `${Math.random() * 100}%`;
     petal.style.top = "-10vh";
     petalContainer.appendChild(petal);
@@ -416,6 +472,30 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(spawnHeart, i * 90);
     }
   }
+
+  function createClickHearts(event) {
+    if (!heartContainer) return;
+    const { clientX, clientY } = event;
+    const count = 3 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i += 1) {
+      const heart = document.createElement("span");
+      heart.classList.add("click-heart");
+      heart.textContent = clickHeartSymbols[Math.floor(Math.random() * clickHeartSymbols.length)];
+      heart.style.left = `${clientX}px`;
+      heart.style.top = `${clientY}px`;
+      heart.style.color = clickHeartColors[Math.floor(Math.random() * clickHeartColors.length)];
+      heart.style.fontSize = `${1.2 + Math.random() * 0.8}rem`;
+      heart.style.setProperty("--dx", `${(Math.random() - 0.5) * 120}px`);
+      heart.style.setProperty("--dy", `${-80 - Math.random() * 120}px`);
+      heartContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 1600);
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    if (document.body.classList.contains("locked")) return;
+    createClickHearts(event);
+  });
 
   // ------------------------------ 相册拍立得增强 ------------------------------
   function enhanceGallery() {
