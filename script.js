@@ -504,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (img.closest("figure")) return;
       const wrapper = document.createElement("figure");
       wrapper.className = "polaroid";
-      wrapper.style.setProperty("--tilt", `${(Math.random() * 10 - 5).toFixed(2)}deg`);
+      wrapper.style.setProperty("--tilt", `${(Math.random() * 15 - 7.5).toFixed(2)}deg`);
       gallery.insertBefore(wrapper, img);
       wrapper.appendChild(img);
     });
