@@ -420,7 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       unlockSite();
     } else if (passwordError) {
-      passwordError.textContent = "答案好似唔對喔，再諗諗～";
+      passwordError.textContent = "嗚嗚嗚嗚嗚嗚嗚~";
       if (passwordPanel) {
         passwordPanel.classList.remove("shake");
         // 强制重绘以重新触发动画
@@ -668,7 +668,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resetResultDisplay();
 
-    // ⭐⭐⭐ 情况 1：满分
+    // 情况 1：满分
     if (score === 5) {
       quizImage.src = "images/b.png";   // 你要的满分图
       quizMessage.textContent = "滿分！我豬豬好聰明呀 簡直就係我的靈魂伴侶！";
@@ -677,12 +677,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // ⭐⭐⭐ 情况 2：不是满分
+    // 情况 2：不是满分
     quizImage.src = "images/a.jpg";      // 非满分用一张统一的图
     quizImage.hidden = false;
 
-    // 哪些题错了，用逗号连接
-    const wrongList = wrongQuestions.join("，");
+    // 哪些题错了，用頓號连接
+    const wrongList = wrongQuestions.join("、");
 
     quizMessage.textContent = 
       `得分是 ${score}/5，
