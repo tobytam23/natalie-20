@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const quizMessage = document.getElementById("quiz-message");
   const heartContainer = document.querySelector(".floating-hearts");
   const petalContainer = document.querySelector(".falling-petals");
+  const photoContainer = document.querySelector(".photo-container");
   const fireworksCanvas = document.getElementById("fireworksCanvas");
   const ctx = fireworksCanvas.getContext("2d");
   const visualizerCanvas = document.getElementById("music-visualizer");
@@ -46,10 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const visualizerParticles = [];
   let siteUnlocked = false;
 
-  const floatingHeartEmojis = ["💖", "❤️", "💘", "💗", "💕", "💝"];
+  const floatingHeartEmojis = ["💖", "❤️", "💘", "💗", "💕", "💝","🎂","🧁"];
   const petalEmojis = ["🌸", "🌺", "🌷", "🌼", "🌻", "💐", "🌹"];
+  const photoEmojis = ["images/click/a.jpg","images/click/b.jpg","images/click/c.jpg","images/click/d.jpg"];
   const clickHeartColors = ["#ff4d88", "#f472b6", "#fb7185", "#facc15", "#34d399", "#60a5fa", "#c084fc"];
-  const clickHeartSymbols = ["❤", "💖", "💗", "💘", "💕", "💝"];
+  // const clickHeartSymbols = ["❤", "💖", "💗", "💘", "💕", "💝"];
+  const clickHeartSymbols = ["images/click/a.jpg", "images/click/b.jpg","images/click/c.jpg", "images/click/d.jpg"];
 
   // ------------------------------ 打字机效果：营造情感氛围 ------------------------------
   const headerMessage = "This little site is made just for you. 💖";
@@ -463,8 +466,24 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => petal.remove(), 8000);
   }
 
+  function spawnPhoto() {
+    const photo = document.createElement("img");
+    photo.src = photoEmojis[Math.floor(Math.random() * photoEmojis.length)];
+    photo.classList.add("fall-photo");
+
+    // 随机水平位置
+    photo.style.left = `${Math.random() * 100}%`;
+    photo.style.top = "-10vh";
+
+    photoContainer.appendChild(photo);
+
+    // 8 秒后移除
+    setTimeout(() => photo.remove(), 8000);
+  }
+
   setInterval(spawnHeart, 1800);
-  setInterval(spawnPetal, 2200);
+  setInterval(spawnPetal, 2100);
+  setInterval(spawnPhoto, 1500); // 每 1.2 秒掉一张
 
   function burstHearts(count = 28) {
     // 连续制造多颗爱心，营造满屏心动的惊喜
@@ -480,7 +499,8 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < count; i += 1) {
       const heart = document.createElement("span");
       heart.classList.add("click-heart");
-      heart.textContent = clickHeartSymbols[Math.floor(Math.random() * clickHeartSymbols.length)];
+      // heart.textContent = clickHeartSymbols[Math.floor(Math.random() * clickHeartSymbols.length)];
+      heart.innerHTML = `<img src="${clickHeartSymbols[Math.floor(Math.random() * clickHeartSymbols.length)]}" class="click-heart-img">`;
       heart.style.left = `${clientX}px`;
       heart.style.top = `${clientY}px`;
       heart.style.color = clickHeartColors[Math.floor(Math.random() * clickHeartColors.length)];
